@@ -1,9 +1,20 @@
+export type UserRole =
+  | "Traveler"
+  | "Student"
+  | "JobSeeker"
+  | "Professional"
+  | "Entrepreneur"
+  | "Employer"
+  | "PropertyProvider"
+  | "Admin";
+
 export interface User {
   id: string;
   name: string;
   email: string;
+  mobile?: string;
   avatar: string;
-  role: "seeker" | "employer" | "student" | "admin";
+  role: UserRole;
   location: string;
   savedJobs: string[];
   savedUniversities: string[];
@@ -13,6 +24,21 @@ export interface User {
   premiumMember: boolean;
   joinedDate: string;
   profileComplete: number;
+  bio?: string;
+  targetCountry?: string;
+  linkedIn?: string;
+  languages?: string[];
+  registeredAt: number;
+}
+
+export interface RegisteredAccount {
+  id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  passwordHash: string; // base64 in mock
+  role: UserRole | null;
+  createdAt: number;
 }
 
 export interface Job {

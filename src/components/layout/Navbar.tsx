@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Globe, Bookmark, User, LogOut, ChevronDown, Bell, Briefcase, GraduationCap, Home, Map, Star } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { Menu, X, Globe, Bookmark, User, LogOut, ChevronDown, Bell, Briefcase, GraduationCap, Home, Map, Star, Settings } from "lucide-react";
+import { useAuth, ROLE_ROUTES } from "@/contexts/AuthContext";
 import { useScrollPosition } from "@/hooks/useScrollPosition";
+import type { UserRole } from "@/types";
 
 const NAV_ITEMS = [
   { label: "Jobs", path: "/jobs", icon: <Briefcase size={16} /> },
@@ -15,7 +16,7 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { user, isLoggedIn, login, logout } = useAuth();
+  const { user, isLoggedIn, logout } = useAuth();
   const { isScrolled } = useScrollPosition();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -110,8 +111,11 @@ export default function Navbar() {
                           <span className="text-xs font-semibold text-gold-500">Premium Member</span>
                         </div>
                       )}
-                      <Link to="/dashboard" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-navy/70 hover:text-royal hover:bg-royal-50 transition-colors" onClick={() => setUserMenuOpen(false)}>
+                      <Link to={ROLE_ROUTES[user?.role as UserRole] ?? "/dashboard"} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-navy/70 hover:text-royal hover:bg-royal-50 transition-colors" onClick={() => setUserMenuOpen(false)}>
                         <User size={15} /> Dashboard
+                      </Link>
+                      <Link to="/profile" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-navy/70 hover:text-royal hover:bg-royal-50 transition-colors" onClick={() => setUserMenuOpen(false)}>
+                        <Settings size={15} /> My Profile
                       </Link>
                       <Link to="/saved" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-navy/70 hover:text-royal hover:bg-royal-50 transition-colors" onClick={() => setUserMenuOpen(false)}>
                         <Bookmark size={15} /> Saved Items
@@ -127,19 +131,19 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <button
-                  onClick={login}
+                <Link
+                  to="/login"
                   className={`text-sm font-semibold px-4 py-2 rounded-lg transition-colors
                               ${isScrolled || !isHome ? "text-navy hover:text-royal" : "text-white/90 hover:text-white"}`}
                 >
                   Sign In
-                </button>
-                <button
-                  onClick={login}
+                </Link>
+                <Link
+                  to="/register"
                   className="btn-primary text-sm py-2 px-5"
                 >
                   Get Started
-                </button>
+                </Link>
               </>
             )}
           </div>
@@ -176,13 +180,13 @@ export default function Navbar() {
             <div className="pt-3 border-t border-navy/8 flex gap-3">
               {isLoggedIn ? (
                 <>
-                  <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="flex-1 btn-secondary text-sm py-2.5 text-center">Dashboard</Link>
+                  <Link to={ROLE_ROUTES[user?.role as UserRole] ?? "/dashboard"} onClick={() => setMobileOpen(false)} className="flex-1 btn-secondary text-sm py-2.5 text-center">Dashboard</Link>
                   <button onClick={() => { logout(); setMobileOpen(false); }} className="flex-1 py-2.5 text-sm font-semibold text-red-500 border border-red-200 rounded-xl hover:bg-red-50 transition-colors">Sign Out</button>
                 </>
               ) : (
                 <>
-                  <button onClick={() => { login(); setMobileOpen(false); }} className="flex-1 btn-secondary text-sm py-2.5">Sign In</button>
-                  <button onClick={() => { login(); setMobileOpen(false); }} className="flex-1 btn-primary text-sm py-2.5">Get Started</button>
+                  <Link to="/login" onClick={() => setMobileOpen(false)} className="flex-1 btn-secondary text-sm py-2.5 text-center">Sign In</Link>
+                  <Link to="/register" onClick={() => setMobileOpen(false)} className="flex-1 btn-primary text-sm py-2.5 text-center">Get Started</Link>
                 </>
               )}
             </div>
